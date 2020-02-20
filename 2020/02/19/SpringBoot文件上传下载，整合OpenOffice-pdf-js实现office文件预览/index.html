@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="技术博客,后端开发,YY技术博客,SpringBoot,Java,SSM" />
+   
+  <meta name="description" content="一个后端开发的技术博客" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    SpringBoot文件上传下载，整合OpenOffice-pdf-js实现office文件预览 |  YY技术博客
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="YY技术博客" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-SpringBoot文件上传下载，整合OpenOffice-pdf-js实现office文件预览" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  SpringBoot文件上传下载，整合OpenOffice-pdf-js实现office文件预览
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/02/19/SpringBoot%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%8B%E8%BD%BD%EF%BC%8C%E6%95%B4%E5%90%88OpenOffice-pdf-js%E5%AE%9E%E7%8E%B0office%E6%96%87%E4%BB%B6%E9%A2%84%E8%A7%88/" class="article-date">
+  <time datetime="2020-02-19T14:44:50.000Z" itemprop="datePublished">2020-02-19</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a> / <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/">后端</a> / <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/SpringBoot/">SpringBoot</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">3.2k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">18分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="SpringBoot文件上传下载，整合OpenOffice-pdf-js实现office文件预览"><a href="#SpringBoot文件上传下载，整合OpenOffice-pdf-js实现office文件预览" class="headerlink" title="SpringBoot文件上传下载，整合OpenOffice+pdf.js实现office文件预览"></a>SpringBoot文件上传下载，整合OpenOffice+pdf.js实现office文件预览</h1><blockquote>
+<p>SpringBoot文件上传下载，整合OpenOffice+pdf.js实现office文件预览</p>
+</blockquote>
+<p>文件上传使用MultipartFile对象、下载使用传统IO流、jobconverter结合OpenOffice把office文件转为pdf文件、通过pdf.js实现在线预览pdf文件。（核心代码直接跳5.Service层）</p>
+<a id="more"></a>
+
+<h3 id="1-导入依赖"><a href="#1-导入依赖" class="headerlink" title="1.    导入依赖"></a>1.    导入依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-devtools<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.junit.vintage<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>junit-vintage-engine<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- openOffice 和 jobconverter--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.jodconverter<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jodconverter-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.jodconverter<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jodconverter-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.jodconverter<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jodconverter-local<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-安装OpenOffice"><a href="#2-安装OpenOffice" class="headerlink" title="2.  安装OpenOffice"></a>2.  安装OpenOffice</h3><p>OpenOffice下载地址: <a href="http://www.openoffice.org/download/" target="_blank" rel="noopener">http://www.openoffice.org/download/</a></p>
+<p><strong>（Linux）安装</strong></p>
+<p><em>1.下载安装包到Linux opt文件夹</em></p>
+<p><em>2.解压：tar -zxvf Apache_OpenOffice_4.1.6_Linux_x86-64_install-rpm_zh-CN.tar.gz</em></p>
+<p><em>3.进入cd zh-CN/RPMS</em></p>
+<p><em>4.安装：rpm -ivh *.rpm</em></p>
+<p><em>5.进入openOffice安装目录，命令：cd /opt/openoffice4/program/</em></p>
+<p><em>6.开启服务（永久启动）：soffice –headless –accept=“socket,host=127.0.0.1,port=8100;urp;” –nofirststartwizard &amp;</em></p>
+<p><em>7.查看进程：netstat -lnp |grep 8100</em></p>
+<p>*8.查询指定端口是否已开（开放8100端口）： firewall-cmd –query-port=8100/tcp</p>
+<p><em>提示 yes，表示开启；no表示未开启</em></p>
+<p><em>9.添加指定需要开放的端口：firewall-cmd –add-port=8100/tcp –permanent</em></p>
+<p><em>10.重载入添加的端口：firewall-cmd –reload</em></p>
+<p><em>11.查询指定端口是否开启成功：firewall-cmd –query-port=8100/tcp</em></p>
+<p><strong>（Windows）安装</strong></p>
+<p>1.一直按下一步就ok</p>
+<p>2.启动服务，cmd进入安装目录</p>
+<figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> C:\Program Files (x86)\OpenOffice <span class="number">4</span>\program soffice -headless -accept="socket,host=<span class="number">127</span>.<span class="number">0</span>.<span class="number">0</span>.<span class="number">1</span>,port=<span class="number">8100</span>;urp;" -nofirststartwizard</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-编写配置文件application-yml"><a href="#3-编写配置文件application-yml" class="headerlink" title="3.    编写配置文件application.yml"></a>3.    编写配置文件application.yml</h3><ol>
+<li>static-path-pattern设置静态资源访问根路径，默认“/**”，resources.static-locations设置静态资源位置，默认”classpath:/META-INF/resources/“,”classpath:/resources/“,”classpath:/static/“,”classpath:/public/“，但是这里配置了resources.static-locations会覆盖掉默认配置，所以要加上，“file:${files.uploadDir}”配置外部资源，可以直接访问上传的文件，这里的“file:”代表访问文件系统。</li>
+<li>配置jodconverter，port-numbers配置openoffice服务端口，office-home为openoffice安装路径。</li>
+</ol>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 上传文件存储路径</span></span><br><span class="line"><span class="attr">files.uploadDir:</span> <span class="string">E:/uploads/</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">servlet:</span></span><br><span class="line">    <span class="comment"># multipartfile设置文件大小、上传数据大小</span></span><br><span class="line">    <span class="attr">multipart:</span></span><br><span class="line">      <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">max-file-size:</span> <span class="string">100MB</span></span><br><span class="line">      <span class="attr">max-request-size:</span> <span class="string">200MB</span></span><br><span class="line">  <span class="comment"># 配置静态资源</span></span><br><span class="line">  <span class="attr">mvc:</span></span><br><span class="line">    <span class="attr">static-path-pattern:</span> <span class="string">/**</span></span><br><span class="line">  <span class="attr">resources:</span></span><br><span class="line">    <span class="attr">static-locations:</span> <span class="string">["classpath:/META-INF/resources/","classpath:/resources/","classpath:/static/","classpath:/public/","file:$&#123;files.uploadDir&#125;"]</span></span><br><span class="line">  <span class="comment"># 配置thymeleaf模板</span></span><br><span class="line">  <span class="attr">thymeleaf:</span></span><br><span class="line">    <span class="attr">cache:</span> <span class="literal">false</span></span><br><span class="line">    <span class="attr">mode:</span> <span class="string">HTML</span></span><br><span class="line"><span class="comment"># 配置jodconverter</span></span><br><span class="line"><span class="attr">jodconverter:</span></span><br><span class="line">  <span class="attr">local:</span></span><br><span class="line">    <span class="attr">enabled:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">max-tasks-per-process:</span> <span class="number">10</span></span><br><span class="line">    <span class="attr">port-numbers:</span> <span class="number">8100</span></span><br><span class="line">    <span class="attr">office-home:</span> <span class="string">E:/Program</span> <span class="string">Files/OpenOffice</span> <span class="number">4.1</span><span class="number">.7</span><span class="string">/openofficedata</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="4-实体类FileMsg"><a href="#4-实体类FileMsg" class="headerlink" title="4.    实体类FileMsg"></a>4.    实体类FileMsg</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.sql.Timestamp;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileMsg</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String fileName;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> fileId;</span><br><span class="line">    <span class="keyword">private</span> String fileUrl;</span><br><span class="line">    <span class="keyword">private</span> String fileType;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> fileSize;</span><br><span class="line">    <span class="keyword">private</span> Timestamp uploadTime;</span><br><span class="line">    <span class="keyword">private</span> String previewUrl;</span><br><span class="line">    <span class="comment">//uploadUser</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FileMsg</span><span class="params">(String fileName, <span class="keyword">long</span> fileId, String fileUrl, String fileType, <span class="keyword">long</span> fileSize, Timestamp uploadTime)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.fileName = fileName;</span><br><span class="line">        <span class="keyword">this</span>.fileId = fileId;</span><br><span class="line">        <span class="keyword">this</span>.fileUrl = fileUrl;</span><br><span class="line">        <span class="keyword">this</span>.fileType = fileType;</span><br><span class="line">        <span class="keyword">this</span>.fileSize = fileSize;</span><br><span class="line">        <span class="keyword">this</span>.uploadTime = uploadTime;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">FileMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//·····省略setter、getter、toString</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="5-Service层"><a href="#5-Service层" class="headerlink" title="5.    Service层"></a>5.    Service层</h3><h4 id="Dao（FileHandleDao）"><a href="#Dao（FileHandleDao）" class="headerlink" title="Dao（FileHandleDao）"></a>Dao（FileHandleDao）</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.ljnt.fileio.entity.FileMsg;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.multipart.MultipartFile;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">FileHandleDao</span> </span>&#123;</span><br><span class="line">    <span class="function">ArrayList&lt;FileMsg&gt; <span class="title">fileuploadhandle</span><span class="params">(List&lt;MultipartFile&gt; fileList, HttpServletRequest request)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">filedownloadhandle</span><span class="params">(String fileId, HttpServletResponse response)</span></span>;</span><br><span class="line">    <span class="function">String <span class="title">generatePDF</span><span class="params">(String fileAdd,String realfileName,String fileType)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Impl（FileHandleImpl）文件上传下载、转pdf、编码转换等"><a href="#Impl（FileHandleImpl）文件上传下载、转pdf、编码转换等" class="headerlink" title="Impl（FileHandleImpl）文件上传下载、转pdf、编码转换等"></a>Impl（FileHandleImpl）文件上传下载、转pdf、编码转换等</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.ljnt.fileio.entity.FileMsg;</span><br><span class="line"><span class="keyword">import</span> com.ljnt.fileio.service.FileHandleDao;</span><br><span class="line"><span class="keyword">import</span> org.jodconverter.DocumentConverter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Value;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.multipart.MultipartFile;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.io.*;</span><br><span class="line"><span class="keyword">import</span> java.sql.Timestamp;</span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @ Program       :  com.ljnt.fileio.service.impl.FileHandleImpl</span></span><br><span class="line"><span class="comment"> * @ Description   :  File上传下载service</span></span><br><span class="line"><span class="comment"> * @ Author        :  lj</span></span><br><span class="line"><span class="comment"> * @ CreateDate    :  2020-2-15 8:05</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileHandleImpl</span> <span class="keyword">implements</span> <span class="title">FileHandleDao</span> </span>&#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;files.uploadDir&#125;"</span>)</span><br><span class="line">    String uploadDir;<span class="comment">//文件存储根路径</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> DocumentConverter converter;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Description</span>  ：文件上传处理</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@author</span>       : lj</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span>        : [fileList, request]</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>       : java.util.ArrayList&lt;com.ljnt.fileio.entity.FileMsg&gt;</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@exception</span>    :</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@date</span>         : 2020-2-16 11:24</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ArrayList&lt;FileMsg&gt; <span class="title">fileuploadhandle</span><span class="params">(List&lt;MultipartFile&gt; fileList, HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ArrayList&lt;FileMsg&gt; fileMsgArrayList=<span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">            <span class="keyword">for</span>(MultipartFile file:fileList)&#123;</span><br><span class="line">                <span class="keyword">if</span> (file.isEmpty())&#123;</span><br><span class="line">                    System.out.println(<span class="string">"文件为空"</span>);</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//获得实体消息</span></span><br><span class="line">                String fileName=file.getOriginalFilename();</span><br><span class="line">                <span class="keyword">long</span> fileId= <span class="keyword">new</span> Date().getTime();</span><br><span class="line">                <span class="keyword">int</span> ty=fileName.lastIndexOf(<span class="string">"."</span>);</span><br><span class="line">                String fileType=<span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">if</span> (ty!=-<span class="number">1</span>)&#123;</span><br><span class="line">                    fileType=fileName.substring(ty+<span class="number">1</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">long</span> fileSize=file.getSize();</span><br><span class="line">                Timestamp uploadTime=<span class="keyword">new</span> Timestamp(fileId);</span><br><span class="line">                <span class="comment">//新建字文件夹路径</span></span><br><span class="line">                SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyyMMdd"</span>);</span><br><span class="line">                String fileAdd = sdf.format(<span class="keyword">new</span> Date());</span><br><span class="line">                String path = uploadDir + File.separator + fileAdd + File.separator;</span><br><span class="line">                File pathfile=<span class="keyword">new</span> File(path);</span><br><span class="line">                <span class="keyword">if</span>(!pathfile.exists()&amp;&amp;!pathfile.isDirectory())&#123;</span><br><span class="line">                    pathfile.mkdirs();</span><br><span class="line">                &#125;</span><br><span class="line">                String realfileName = fileId+<span class="string">"_"</span>+<span class="keyword">new</span> Random().nextInt(<span class="number">1000</span>)+<span class="string">"_"</span>+fileName;</span><br><span class="line">                String rootUrl=request.getScheme()+<span class="string">"://"</span>+request.getRemoteHost()+<span class="string">":"</span>+request.getServerPort()+<span class="string">"/"</span>;</span><br><span class="line">                String fileUrl = rootUrl+fileAdd+<span class="string">"/"</span>+realfileName;</span><br><span class="line">                File dest = <span class="keyword">new</span> File(path,realfileName);</span><br><span class="line">                file.transferTo(dest);<span class="comment">// 文件写入</span></span><br><span class="line">                FileMsg fileMsg=<span class="keyword">new</span> FileMsg(fileName,fileId,fileUrl,fileType,fileSize,uploadTime);<span class="comment">//返回文件消息</span></span><br><span class="line">                <span class="comment">//office文件转pdf</span></span><br><span class="line">                String preview=generatePDF(fileAdd,realfileName,fileType);</span><br><span class="line">                <span class="keyword">if</span> (preview!=<span class="keyword">null</span>)&#123;</span><br><span class="line">                    fileMsg.setPreviewUrl(rootUrl+<span class="string">"pdf/web/viewer.html?file="</span>+preview);</span><br><span class="line">                &#125;</span><br><span class="line">                fileMsgArrayList.add(fileMsg);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> fileMsgArrayList;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Description</span>  ：文件下载处理</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@author</span>       : lj</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span>        : [fileId, response]</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>       : boolean</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@exception</span>    :</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@date</span>         : 2020-2-16 13:01</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">filedownloadhandle</span><span class="params">(String fileId, HttpServletResponse response)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 设置文件名，文件相对路径，根据业务需要可根据fileId存数据库获取，这里直接写</span></span><br><span class="line">        String fileName = <span class="string">"1581827393374_5521.jpg"</span>;</span><br><span class="line">        String fileAPath = <span class="string">"/20200216/1581827393374_5521.jpg"</span>;</span><br><span class="line">        <span class="keyword">if</span> (fileAPath != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//设置文件路径</span></span><br><span class="line">            String realPath = uploadDir;</span><br><span class="line">            File file = <span class="keyword">new</span> File(realPath , fileAPath);</span><br><span class="line">            <span class="keyword">if</span> (file.exists()&amp;&amp;file.isFile()) &#123;</span><br><span class="line">                response.setContentType(<span class="string">"application/force-download"</span>);<span class="comment">// 设置强制下载不打开</span></span><br><span class="line">                response.addHeader(<span class="string">"Content-Disposition"</span>, <span class="string">"attachment;fileName="</span> + fileName);<span class="comment">// 设置文件名</span></span><br><span class="line">                <span class="keyword">byte</span>[] buffer = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">1024</span>];</span><br><span class="line">                FileInputStream fis = <span class="keyword">null</span>;</span><br><span class="line">                BufferedInputStream bis = <span class="keyword">null</span>;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    fis = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">                    bis = <span class="keyword">new</span> BufferedInputStream(fis);</span><br><span class="line">                    OutputStream os = response.getOutputStream();</span><br><span class="line">                    <span class="keyword">int</span> i = bis.read(buffer);</span><br><span class="line">                    <span class="keyword">while</span> (i != -<span class="number">1</span>) &#123;</span><br><span class="line">                        os.write(buffer, <span class="number">0</span>, i);</span><br><span class="line">                        i = bis.read(buffer);</span><br><span class="line">                    &#125;</span><br><span class="line">                    System.out.println(<span class="string">"success"</span>);</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">                &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    <span class="keyword">if</span> (bis != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            bis.close();</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                            e.printStackTrace();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> (fis != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            fis.close();</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                            e.printStackTrace();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Description</span>  ：office文件转换pdf</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@author</span>       : lj</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span>        : [fileAPath, realfileName, fileType]</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>       : java.lang.String</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@exception</span>    :</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@date</span>         : 2020-2-16 14:22</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">generatePDF</span><span class="params">(String fileAdd,String realfileName,String fileType)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isOfficeFile(fileType)) &#123;</span><br><span class="line">            File oldfile=<span class="keyword">new</span> File(uploadDir+File.separator+fileAdd+File.separator,realfileName);</span><br><span class="line">            <span class="keyword">if</span> (fileType.toLowerCase().equals(<span class="string">"pdf"</span>))&#123;<span class="comment">//本身是pdf不转</span></span><br><span class="line">                <span class="keyword">return</span> <span class="string">"/"</span>+fileAdd+<span class="string">"/"</span>+realfileName;</span><br><span class="line">            &#125;<span class="keyword">else</span> <span class="keyword">if</span> (fileType.toLowerCase().equals(<span class="string">"txt"</span>))&#123;</span><br><span class="line">                <span class="keyword">if</span> (!tranTxt(oldfile))&#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            String fileName=realfileName.substring(<span class="number">0</span>,realfileName.lastIndexOf(<span class="string">"."</span>))+<span class="string">".pdf"</span>;</span><br><span class="line">            File newfile=<span class="keyword">new</span> File(uploadDir+File.separator+<span class="string">"2pdf"</span>+File.separator,fileName);</span><br><span class="line">            <span class="keyword">if</span> (!newfile.getParentFile().exists())&#123;</span><br><span class="line">                newfile.getParentFile().mkdirs();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//转换核心代码</span></span><br><span class="line">                converter.convert(oldfile).to(newfile).execute();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">                System.out.println(<span class="string">"转换出错！"</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">"转换成功！"</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">"/2pdf/"</span>+fileName;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Description</span>  ：简单判断是否是office文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@author</span>       : lj</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span>        : [fileType]</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>       : boolean</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@exception</span>    :</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@date</span>         : 2020-2-16 14:21</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">isOfficeFile</span><span class="params">(String fileType)</span></span>&#123;</span><br><span class="line">        fileType=fileType.toLowerCase();</span><br><span class="line">        System.out.println(fileType);</span><br><span class="line">        <span class="keyword">switch</span> (fileType)&#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"txt"</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"doc"</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"docx"</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"xls"</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"xlsx"</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"ppt"</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"pptx"</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"pdf"</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"html"</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">"xml"</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@Description</span>  : TXT文件编码转换，解决转pdf中文乱码问题</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@author</span>       : lj</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span>        : [file]</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span>       : boolean</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@exception</span>    :</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@date</span>         : 2020-2-17 0:00</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">tranTxt</span><span class="params">(File file)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            FileInputStream fis = <span class="keyword">new</span> FileInputStream(file);</span><br><span class="line">            InputStreamReader isr = <span class="keyword">new</span> InputStreamReader(fis, <span class="string">"GBK"</span>);</span><br><span class="line">            BufferedReader br = <span class="keyword">new</span> BufferedReader(isr);</span><br><span class="line">            String OriStr;</span><br><span class="line">            StringBuilder stringBuilder = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">            <span class="keyword">while</span> ((OriStr = br.readLine()) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">//手动拼接换行符</span></span><br><span class="line">                OriStr += <span class="string">"\n"</span>;</span><br><span class="line">                stringBuilder.append(OriStr);</span><br><span class="line">            &#125;</span><br><span class="line">            String targetStr = stringBuilder.toString();</span><br><span class="line">            <span class="comment">//false代表不追加直接覆盖,true代表追加文件</span></span><br><span class="line">            FileOutputStream fos = <span class="keyword">new</span> FileOutputStream(file,<span class="keyword">false</span>);</span><br><span class="line">            OutputStreamWriter osw = <span class="keyword">new</span> OutputStreamWriter(fos, <span class="string">"UTF-8"</span>);</span><br><span class="line">            osw.write(stringBuilder.toString());</span><br><span class="line">            osw.flush();</span><br><span class="line">            osw.close();</span><br><span class="line">            fos.close();</span><br><span class="line">            br.close();</span><br><span class="line">            isr.close();</span><br><span class="line">            fis.close();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">// <span class="doctag">TODO:</span> handle exception</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-Controller层"><a href="#6-Controller层" class="headerlink" title="6.    Controller层"></a>6.    Controller层</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.ljnt.fileio.service.FileHandleDao;</span><br><span class="line"><span class="keyword">import</span> org.jodconverter.DocumentConverter;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.*;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.multipart.MultipartFile;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.multipart.MultipartHttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * @ Program       :  com.ljnt.fileio.controller.FileController</span></span><br><span class="line"><span class="comment"> * @ Description   :  文件上传下载controller</span></span><br><span class="line"><span class="comment"> * @ Author        :  lj</span></span><br><span class="line"><span class="comment"> * @ CreateDate    :  2020-2-15 7:40</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FileController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> DocumentConverter converter;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> FileHandleDao fileHandleDao;</span><br><span class="line">    <span class="meta">@PostMapping</span>(<span class="string">"/upload"</span>)</span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">uploadfile</span><span class="params">(HttpServletRequest request)</span></span>&#123;</span><br><span class="line">        MultipartHttpServletRequest multipartHttpServletRequest= (MultipartHttpServletRequest) request;</span><br><span class="line">        List&lt;MultipartFile&gt; files=multipartHttpServletRequest.getFiles(<span class="string">"file"</span>);</span><br><span class="line">        <span class="keyword">return</span> fileHandleDao.fileuploadhandle(files,request);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/download/&#123;fileId&#125;"</span>)</span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">downloadfile</span><span class="params">(@PathVariable String fileId, HttpServletResponse response)</span></span>&#123;</span><br><span class="line">        System.out.println(fileId);</span><br><span class="line">        <span class="keyword">return</span> String.valueOf(fileHandleDao.filedownloadhandle(fileId,response));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-导入pdf-js"><a href="#7-导入pdf-js" class="headerlink" title="7.     导入pdf.js"></a>7.     导入pdf.js</h3><p>pdf.js下载地址：<a href="https://gitee.com/xinxi17_admin/pdf.js/releases" target="_blank" rel="noopener">https://gitee.com/xinxi17_admin/pdf.js/releases</a></p>
+<p>解压文件导入到项目中static/pdf/中，目录结构：</p>
+<p><img src="https://img-blog.csdnimg.cn/20200217112724858.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xqbGo4ODg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h3 id="8-编写主页"><a href="#8-编写主页" class="headerlink" title="8.    编写主页"></a>8.    编写主页</h3><h4 id="index-html"><a href="#index-html" class="headerlink" title="index.html"></a>index.html</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"zh-cn"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- Required meta tags --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"UTF-8"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">http-equiv</span>=<span class="string">"X-UA-Compatible"</span> <span class="attr">content</span>=<span class="string">"IE=edge"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">meta</span> <span class="attr">name</span>=<span class="string">"viewport"</span> <span class="attr">content</span>=<span class="string">"width=device-width, initial-scale=1, shrink-to-fit=no"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>Spring Boot File Upload / Download Rest API Example<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- Bootstrap CSS --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">link</span> <span class="attr">href</span>=<span class="string">"/css/main.css"</span> <span class="attr">rel</span>=<span class="string">"stylesheet"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">noscript</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h2</span>&gt;</span>Sorry! Your browser doesn't support Javascript<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">noscript</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"upload-container"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"upload-header"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">h2</span>&gt;</span>Spring Boot File Upload / Download Rest API Example<span class="tag">&lt;/<span class="name">h2</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"upload-content"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"single-upload"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">h3</span>&gt;</span>Upload Single File<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"singleUploadForm"</span> <span class="attr">name</span>=<span class="string">"singleUploadForm"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"singleFileUploadInput"</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"file"</span> <span class="attr">class</span>=<span class="string">"file-input"</span> <span class="attr">required</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">class</span>=<span class="string">"primary submit-btn"</span>&gt;</span>Submit<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"upload-response"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"singleFileUploadError"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"singleFileUploadSuccess"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"multiple-upload"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">h3</span>&gt;</span>Upload Multiple Files<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">form</span> <span class="attr">id</span>=<span class="string">"multipleUploadForm"</span> <span class="attr">name</span>=<span class="string">"multipleUploadForm"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">input</span> <span class="attr">id</span>=<span class="string">"multipleFileUploadInput"</span> <span class="attr">type</span>=<span class="string">"file"</span> <span class="attr">name</span>=<span class="string">"files"</span> <span class="attr">class</span>=<span class="string">"file-input"</span> <span class="attr">multiple</span> <span class="attr">required</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">class</span>=<span class="string">"primary submit-btn"</span>&gt;</span>Submit<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">"upload-response"</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"multipleFileUploadError"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">div</span> <span class="attr">id</span>=<span class="string">"multipleFileUploadSuccess"</span>&gt;</span><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- Optional JavaScript --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">"/js/main.js"</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="main-css"><a href="#main-css" class="headerlink" title="main.css"></a>main.css</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br></pre></td><td class="code"><pre><span class="line">* &#123;</span><br><span class="line">    <span class="attribute">-webkit-box-sizing</span>: border-box;</span><br><span class="line">    <span class="attribute">-moz-box-sizing</span>: border-box;</span><br><span class="line">    <span class="attribute">box-sizing</span>: border-box;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">    <span class="attribute">margin</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">font-weight</span>: <span class="number">400</span>;</span><br><span class="line">    <span class="attribute">font-family</span>: <span class="string">"Helvetica Neue"</span>, Helvetica, Arial, sans-serif;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">1rem</span>;</span><br><span class="line">    <span class="attribute">line-height</span>: <span class="number">1.58</span>;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#333</span>;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#f4f4f4</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">body</span><span class="selector-pseudo">:before</span> &#123;</span><br><span class="line">    <span class="attribute">height</span>: <span class="number">50%</span>;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">position</span>: absolute;</span><br><span class="line">    <span class="attribute">top</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">left</span>: <span class="number">0</span>;</span><br><span class="line">    <span class="attribute">background</span>: <span class="number">#128ff2</span>;</span><br><span class="line">    <span class="attribute">content</span>: <span class="string">""</span>;</span><br><span class="line">    <span class="attribute">z-index</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.clearfix</span><span class="selector-pseudo">:after</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: block;</span><br><span class="line">    <span class="attribute">content</span>: <span class="string">""</span>;</span><br><span class="line">    <span class="attribute">clear</span>: both;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">h1</span>, <span class="selector-tag">h2</span>, <span class="selector-tag">h3</span>, <span class="selector-tag">h4</span>, <span class="selector-tag">h5</span>, <span class="selector-tag">h6</span> &#123;</span><br><span class="line">    <span class="attribute">margin-top</span>: <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">margin-bottom</span>: <span class="number">20px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">h1</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">1.7em</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">a</span> &#123;</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#128ff2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">button</span> &#123;</span><br><span class="line">    <span class="attribute">box-shadow</span>: none;</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">1px</span> solid transparent;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">14px</span>;</span><br><span class="line">    <span class="attribute">outline</span>: none;</span><br><span class="line">    <span class="attribute">line-height</span>: <span class="number">100%</span>;</span><br><span class="line">    <span class="attribute">white-space</span>: nowrap;</span><br><span class="line">    <span class="attribute">vertical-align</span>: middle;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">0.6rem</span> <span class="number">1rem</span>;</span><br><span class="line">    <span class="attribute">border-radius</span>: <span class="number">2px</span>;</span><br><span class="line">    <span class="attribute">transition</span>: all <span class="number">0.2s</span> ease-in-out;</span><br><span class="line">    <span class="attribute">cursor</span>: pointer;</span><br><span class="line">    <span class="attribute">min-height</span>: <span class="number">38px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">button</span><span class="selector-class">.primary</span> &#123;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#128ff2</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">2px</span> <span class="number">2px</span> <span class="number">0</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.12</span>);</span><br><span class="line">    <span class="attribute">color</span>: <span class="number">#fff</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">input</span> &#123;</span><br><span class="line">    <span class="attribute">font-size</span>: <span class="number">1rem</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">input</span><span class="selector-attr">[type=<span class="string">"file"</span>]</span> &#123;</span><br><span class="line">    <span class="attribute">border</span>: <span class="number">1px</span> solid <span class="number">#128ff2</span>;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">6px</span>;</span><br><span class="line">    <span class="attribute">max-width</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.file-input</span> &#123;</span><br><span class="line">    <span class="attribute">width</span>: <span class="number">100%</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.submit-btn</span> &#123;</span><br><span class="line">    <span class="attribute">display</span>: block;</span><br><span class="line">    <span class="attribute">margin-top</span>: <span class="number">15px</span>;</span><br><span class="line">    <span class="attribute">min-width</span>: <span class="number">100px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@media</span> screen <span class="keyword">and</span> (<span class="attribute">min-width:</span> <span class="number">500px</span>) &#123;</span><br><span class="line">    <span class="selector-class">.file-input</span> &#123;</span><br><span class="line">        <span class="attribute">width</span>: <span class="built_in">calc</span>(<span class="number">100%</span> - <span class="number">115px</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="selector-class">.submit-btn</span> &#123;</span><br><span class="line">        <span class="attribute">display</span>: inline-block;</span><br><span class="line">        <span class="attribute">margin-top</span>: <span class="number">0</span>;</span><br><span class="line">        <span class="attribute">margin-left</span>: <span class="number">10px</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.upload-container</span> &#123;</span><br><span class="line">    <span class="attribute">max-width</span>: <span class="number">700px</span>;</span><br><span class="line">    <span class="attribute">margin-left</span>: auto;</span><br><span class="line">    <span class="attribute">margin-right</span>: auto;</span><br><span class="line">    <span class="attribute">background-color</span>: <span class="number">#fff</span>;</span><br><span class="line">    <span class="attribute">box-shadow</span>: <span class="number">0</span> <span class="number">1px</span> <span class="number">11px</span> <span class="built_in">rgba</span>(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0.27</span>);</span><br><span class="line">    <span class="attribute">margin-top</span>: <span class="number">60px</span>;</span><br><span class="line">    <span class="attribute">min-height</span>: <span class="number">400px</span>;</span><br><span class="line">    <span class="attribute">position</span>: relative;</span><br><span class="line">    <span class="attribute">padding</span>: <span class="number">20px</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.upload-header</span> &#123;</span><br><span class="line">    <span class="attribute">border-bottom</span>: <span class="number">1px</span> solid <span class="number">#ececec</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.upload-header</span> <span class="selector-tag">h2</span> &#123;</span><br><span class="line">    <span class="attribute">font-weight</span>: <span class="number">500</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.single-upload</span> &#123;</span><br><span class="line">    <span class="attribute">padding-bottom</span>: <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">margin-bottom</span>: <span class="number">20px</span>;</span><br><span class="line">    <span class="attribute">border-bottom</span>: <span class="number">1px</span> solid <span class="number">#e8e8e8</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-class">.upload-response</span> &#123;</span><br><span class="line">    <span class="attribute">overflow-x</span>: hidden;</span><br><span class="line">    <span class="attribute">word-break</span>: break-all;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="main-js"><a href="#main-js" class="headerlink" title="main.js"></a>main.js</h4><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> singleUploadForm = <span class="built_in">document</span>.querySelector(<span class="string">'#singleUploadForm'</span>);</span><br><span class="line"><span class="keyword">var</span> singleFileUploadInput = <span class="built_in">document</span>.querySelector(<span class="string">'#singleFileUploadInput'</span>);</span><br><span class="line"><span class="keyword">var</span> singleFileUploadError = <span class="built_in">document</span>.querySelector(<span class="string">'#singleFileUploadError'</span>);</span><br><span class="line"><span class="keyword">var</span> singleFileUploadSuccess = <span class="built_in">document</span>.querySelector(<span class="string">'#singleFileUploadSuccess'</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> multipleUploadForm = <span class="built_in">document</span>.querySelector(<span class="string">'#multipleUploadForm'</span>);</span><br><span class="line"><span class="keyword">var</span> multipleFileUploadInput = <span class="built_in">document</span>.querySelector(<span class="string">'#multipleFileUploadInput'</span>);</span><br><span class="line"><span class="keyword">var</span> multipleFileUploadError = <span class="built_in">document</span>.querySelector(<span class="string">'#multipleFileUploadError'</span>);</span><br><span class="line"><span class="keyword">var</span> multipleFileUploadSuccess = <span class="built_in">document</span>.querySelector(<span class="string">'#multipleFileUploadSuccess'</span>);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uploadSingleFile</span>(<span class="params">file</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> formData = <span class="keyword">new</span> FormData();</span><br><span class="line">    formData.append(<span class="string">"file"</span>, file);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    xhr.open(<span class="string">"POST"</span>, <span class="string">"/upload"</span>);</span><br><span class="line"></span><br><span class="line">    xhr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">        <span class="keyword">var</span> response = <span class="built_in">JSON</span>.parse(xhr.responseText);</span><br><span class="line">        <span class="built_in">console</span>.log(response[<span class="number">0</span>]);</span><br><span class="line">        <span class="keyword">if</span>(xhr.status == <span class="number">200</span>) &#123;</span><br><span class="line">            singleFileUploadError.style.display = <span class="string">"none"</span>;</span><br><span class="line">            singleFileUploadSuccess.innerHTML = <span class="string">"&lt;p&gt;File Uploaded Successfully.&lt;/p&gt;&lt;p&gt;DownloadUrl : &lt;a href='"</span> + response[<span class="number">0</span>].fileUrl + <span class="string">"' target='_blank'&gt;"</span> + response[<span class="number">0</span>].fileUrl + <span class="string">"&lt;/a&gt;&lt;/p&gt;"</span>+<span class="string">"&lt;p&gt;PreviewUrl : &lt;a href='"</span> + response[<span class="number">0</span>].previewUrl + <span class="string">"' target='_blank'&gt;"</span> + response[<span class="number">0</span>].previewUrl + <span class="string">"&lt;/a&gt;&lt;/p&gt;"</span>;</span><br><span class="line">            singleFileUploadSuccess.style.display = <span class="string">"block"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            singleFileUploadSuccess.style.display = <span class="string">"none"</span>;</span><br><span class="line">            singleFileUploadError.innerHTML = (response &amp;&amp; response.message) || <span class="string">"Some Error Occurred"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    xhr.send(formData);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">uploadMultipleFiles</span>(<span class="params">files</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> formData = <span class="keyword">new</span> FormData();</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">var</span> index = <span class="number">0</span>; index &lt; files.length; index++) &#123;</span><br><span class="line">        formData.append(<span class="string">"file"</span>, files[index]);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">    xhr.open(<span class="string">"POST"</span>, <span class="string">"/upload"</span>);</span><br><span class="line"></span><br><span class="line">    xhr.onload = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">        <span class="built_in">console</span>.log(xhr.responseText);</span><br><span class="line">        <span class="keyword">var</span> response = <span class="built_in">JSON</span>.parse(xhr.responseText);</span><br><span class="line">        <span class="keyword">if</span>(xhr.status == <span class="number">200</span>) &#123;</span><br><span class="line">            multipleFileUploadError.style.display = <span class="string">"none"</span>;</span><br><span class="line">            <span class="keyword">var</span> content = <span class="string">"&lt;p&gt;All Files Uploaded Successfully&lt;/p&gt;"</span>;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; response.length; i++) &#123;</span><br><span class="line">                content += <span class="string">"&lt;p&gt;DownloadUrl : &lt;a href='"</span> + response[i].fileUrl + <span class="string">"' target='_blank'&gt;"</span> + response[i].fileUrl + <span class="string">"&lt;/a&gt;&lt;/p&gt;"</span>+<span class="string">"&lt;p&gt;PreviewUrl : &lt;a href='"</span> + response[i].previewUrl + <span class="string">"' target='_blank'&gt;"</span> + response[i].previewUrl + <span class="string">"&lt;/a&gt;&lt;/p&gt;"</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            multipleFileUploadSuccess.innerHTML = content;</span><br><span class="line">            multipleFileUploadSuccess.style.display = <span class="string">"block"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            multipleFileUploadSuccess.style.display = <span class="string">"none"</span>;</span><br><span class="line">            multipleFileUploadError.innerHTML = (response &amp;&amp; response.message) || <span class="string">"Some Error Occurred"</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    xhr.send(formData);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">singleUploadForm.addEventListener(<span class="string">'submit'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> files = singleFileUploadInput.files;</span><br><span class="line">    <span class="keyword">if</span>(files.length === <span class="number">0</span>) &#123;</span><br><span class="line">        singleFileUploadError.innerHTML = <span class="string">"Please select a file"</span>;</span><br><span class="line">        singleFileUploadError.style.display = <span class="string">"block"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    uploadSingleFile(files[<span class="number">0</span>]);</span><br><span class="line">    event.preventDefault();</span><br><span class="line">&#125;, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">multipleUploadForm.addEventListener(<span class="string">'submit'</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>)</span>&#123;</span><br><span class="line">    <span class="keyword">var</span> files = multipleFileUploadInput.files;</span><br><span class="line">    <span class="keyword">if</span>(files.length === <span class="number">0</span>) &#123;</span><br><span class="line">        multipleFileUploadError.innerHTML = <span class="string">"Please select at least one file"</span>;</span><br><span class="line">        multipleFileUploadError.style.display = <span class="string">"block"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    uploadMultipleFiles(files);</span><br><span class="line">    event.preventDefault();</span><br><span class="line">&#125;, <span class="literal">true</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="9-测试"><a href="#9-测试" class="headerlink" title="9.    测试"></a>9.    测试</h3><p>创建test.docx</p>
+<img src="https://img-blog.csdnimg.cn/20200217113635896.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xqbGo4ODg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述" style="zoom: 25%;" />
+
+<p>主页上传：</p>
+<p><img src="https://img-blog.csdnimg.cn/2020021711391928.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xqbGo4ODg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>点击PreviewUrl</p>
+<p><img src="https://img-blog.csdnimg.cn/20200217114114314.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xqbGo4ODg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong s>
+              本博客所有文章除特别声明外，均采用 <a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="external nofollow"
+                target="_blank">Apache License 2.0</a> 许可协议。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://yoursite.com/2020/02/19/SpringBoot%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%8B%E8%BD%BD%EF%BC%8C%E6%95%B4%E5%90%88OpenOffice-pdf-js%E5%AE%9E%E7%8E%B0office%E6%96%87%E4%BB%B6%E9%A2%84%E8%A7%88/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OpenOffice/" rel="tag">OpenOffice</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringBoot/" rel="tag">SpringBoot</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%96%87%E4%BB%B6/" rel="tag">文件</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+    
+      <a href="/2020/02/19/springboot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0token%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">springboot整合JWT实现token登录验证的简单实现</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: 'nQU5pPw38nBiR8EeVFl8veLT-gzGzoHsz',
+        app_key: 'tzQF8va3SgeFfWzI7AHPPFw9',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'mp',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        TomLy
+      </li>
+      <li>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <span>
+  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+</span>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.png" alt="YY技术博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/About-Me/index.html">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+	  <a class="nav-item-link" href="https://github.com/lijian-github" target="_blank" rel="noopener">
+		<img src="/images/github.png" style="width:20px;height:20px;" >
+      </a>
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请打赏一下吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<script src="/js/share.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+    strings: ['愿所有的后会有期，都是他日的别来无恙','生命中的不期而遇，都是你努力中的惊喜','技术好，不掉发，没有Bug'],
+    startDelay: 0,
+    typeSpeed: 200,
+    loop: true,
+    backSpeed: 50,
+    showCursor: true
+    });
+  } catch (err) {
+  }
+  
+</script>
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer:'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+    onClick: (e) => {
+      $('.toc-link').removeClass('is-active-link');
+      $(`a[href=${e.target.hash}]`).addClass('is-active-link');
+      $(e.target.hash).scrollIntoView();
+      return false;
+    }
+  });
+</script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"left","width":150,"height":300,"hOffset":50},"mobile":{"show":true},"react":{"opacity":0.8},"dialog":"enable:true hitokoto:true"});</script></body>
+
+</html>

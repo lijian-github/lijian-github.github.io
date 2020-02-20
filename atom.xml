@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>YY技术博客</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2020-02-20T01:29:38.937Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>TomLy</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SpringBoot文件上传下载，整合OpenOffice-pdf-js实现office文件预览</title>
+    <link href="http://yoursite.com/2020/02/19/SpringBoot%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%8B%E8%BD%BD%EF%BC%8C%E6%95%B4%E5%90%88OpenOffice-pdf-js%E5%AE%9E%E7%8E%B0office%E6%96%87%E4%BB%B6%E9%A2%84%E8%A7%88/"/>
+    <id>http://yoursite.com/2020/02/19/SpringBoot%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%8B%E8%BD%BD%EF%BC%8C%E6%95%B4%E5%90%88OpenOffice-pdf-js%E5%AE%9E%E7%8E%B0office%E6%96%87%E4%BB%B6%E9%A2%84%E8%A7%88/</id>
+    <published>2020-02-19T14:44:50.000Z</published>
+    <updated>2020-02-20T01:29:38.937Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;SpringBoot文件上传下载，整合OpenOffice-pdf-js实现office文件预览&quot;&gt;&lt;a href=&quot;#SpringBoot文件上传下载，整合OpenOffice-pdf-js实现office文件预览&quot; class=&quot;headerlink&quot; title=&quot;SpringBoot文件上传下载，整合OpenOffice+pdf.js实现office文件预览&quot;&gt;&lt;/a&gt;SpringBoot文件上传下载，整合OpenOffice+pdf.js实现office文件预览&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;SpringBoot文件上传下载，整合OpenOffice+pdf.js实现office文件预览&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;文件上传使用MultipartFile对象、下载使用传统IO流、jobconverter结合OpenOffice把office文件转为pdf文件、通过pdf.js实现在线预览pdf文件。（核心代码直接跳5.Service层）&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="后端" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/"/>
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/SpringBoot/"/>
+    
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/tags/SpringBoot/"/>
+    
+      <category term="文件" scheme="http://yoursite.com/tags/%E6%96%87%E4%BB%B6/"/>
+    
+      <category term="OpenOffice" scheme="http://yoursite.com/tags/OpenOffice/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>springboot整合JWT实现token登录验证的简单实现</title>
+    <link href="http://yoursite.com/2020/02/19/springboot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0token%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/"/>
+    <id>http://yoursite.com/2020/02/19/springboot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0token%E7%99%BB%E5%BD%95%E9%AA%8C%E8%AF%81%E7%9A%84%E7%AE%80%E5%8D%95%E5%AE%9E%E7%8E%B0/</id>
+    <published>2020-02-19T14:41:32.000Z</published>
+    <updated>2020-02-19T14:58:11.017Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;&lt;strong&gt;JWT官网： &lt;a href=&quot;https://links.jianshu.com/go?to=https%3A%2F%2Fjwt.io%2F&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;https://jwt.io/&lt;/a&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;h2 id=&quot;什么是JWT&quot;&gt;&lt;a href=&quot;#什么是JWT&quot; class=&quot;headerlink&quot; title=&quot;什么是JWT&quot;&gt;&lt;/a&gt;什么是JWT&lt;/h2&gt;&lt;p&gt;&lt;strong&gt;Json web token (JWT)&lt;/strong&gt;, 是为了在网络应用环境间传递声明而执行的一种基于&lt;code&gt;JSON&lt;/code&gt;的开放标准（(RFC 7519).&lt;strong&gt;定义了一种简洁的，自包含的方法用于通信双方之间以&lt;code&gt;JSON&lt;/code&gt;对象的形式安全的传递信息。&lt;/strong&gt;因为数字签名的存在，这些信息是可信的，&lt;strong&gt;JWT可以使用&lt;code&gt;HMAC&lt;/code&gt;算法或者是&lt;code&gt;RSA&lt;/code&gt;的公私秘钥对进行签名。&lt;/strong&gt;&lt;/p&gt;
+&lt;h3 id=&quot;JWT请求流程&quot;&gt;&lt;a href=&quot;#JWT请求流程&quot; class=&quot;headerlink&quot; title=&quot;JWT请求流程&quot;&gt;&lt;/a&gt;JWT请求流程&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;https://img-blog.csdnimg.cn/20200204125650853.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xqbGo4ODg4,size_16,color_FFFFFF,t_70&quot; alt=&quot;在这里插入图片描述&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. 用户使用账号和面发出post请求；&lt;/strong&gt;&lt;br&gt; &lt;strong&gt;2. 服务器使用私钥创建一个jwt；&lt;/strong&gt;&lt;br&gt; &lt;strong&gt;3. 服务器返回这个jwt给浏览器；&lt;/strong&gt;&lt;br&gt; &lt;strong&gt;4. 浏览器将该jwt串在请求头中像服务器发送请求；&lt;/strong&gt;&lt;br&gt; &lt;strong&gt;5. 服务器验证该jwt；&lt;/strong&gt;&lt;br&gt; &lt;strong&gt;6. 返回响应的资源给浏览器。&lt;/strong&gt;&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="后端" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/"/>
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/SpringBoot/"/>
+    
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/tags/SpringBoot/"/>
+    
+      <category term="JWT" scheme="http://yoursite.com/tags/JWT/"/>
+    
+      <category term="Token" scheme="http://yoursite.com/tags/Token/"/>
+    
+      <category term="登录" scheme="http://yoursite.com/tags/%E7%99%BB%E5%BD%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringBoot基础篇-SpringBoot配置文件</title>
+    <link href="http://yoursite.com/2020/02/19/SpringBoot%E5%9F%BA%E7%A1%80%E7%AF%87-SpringBoot%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/"/>
+    <id>http://yoursite.com/2020/02/19/SpringBoot%E5%9F%BA%E7%A1%80%E7%AF%87-SpringBoot%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/</id>
+    <published>2020-02-19T14:38:31.000Z</published>
+    <updated>2020-02-19T14:58:11.015Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;SpringBoot配置文件&quot;&gt;&lt;a href=&quot;#SpringBoot配置文件&quot; class=&quot;headerlink&quot; title=&quot;SpringBoot配置文件&quot;&gt;&lt;/a&gt;SpringBoot配置文件&lt;/h1&gt;&lt;h2 id=&quot;1、配置文件&quot;&gt;&lt;a href=&quot;#1、配置文件&quot; class=&quot;headerlink&quot; title=&quot;1、配置文件&quot;&gt;&lt;/a&gt;1、配置文件&lt;/h2&gt;&lt;p&gt;SpringBoot使用一个全局的配置文件，配置文件名是固定的；&lt;/p&gt;
+&lt;p&gt;•application.properties&lt;/p&gt;
+&lt;p&gt;•application.yml&lt;/p&gt;
+&lt;p&gt;配置文件的作用：修改SpringBoot自动配置的默认值；SpringBoot在底层都给我们自动配置好；&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;YAML（YAML Ain’t Markup Language）：&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;YAML  A Markup Language：是一个标记语言&lt;/p&gt;
+&lt;p&gt;YAML   isn’t Markup Language：不是一个标记语言；&lt;/p&gt;
+&lt;p&gt;YAML 的意思其实是：”Yet Another Markup Language”（仍是一种标记语言），但为了强调这种语言以数据做为中心，而不是以标记语言为重点，而用反向缩略语重命名。&lt;/p&gt;
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="后端" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/"/>
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/SpringBoot/"/>
+    
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/tags/SpringBoot/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringBoot基础篇-SpringBoot原理分析</title>
+    <link href="http://yoursite.com/2020/02/19/SpringBoot%E5%9F%BA%E7%A1%80%E7%AF%87-SpringBoot%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/"/>
+    <id>http://yoursite.com/2020/02/19/SpringBoot%E5%9F%BA%E7%A1%80%E7%AF%87-SpringBoot%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</id>
+    <published>2020-02-19T14:37:03.000Z</published>
+    <updated>2020-02-19T14:58:11.013Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;SpringBoot原理分析&quot;&gt;&lt;a href=&quot;#SpringBoot原理分析&quot; class=&quot;headerlink&quot; title=&quot;SpringBoot原理分析&quot;&gt;&lt;/a&gt;SpringBoot原理分析&lt;/h1&gt;&lt;h2 id=&quot;1-1-起步依赖原理分析&quot;&gt;&lt;a href=&quot;#1-1-起步依赖原理分析&quot; class=&quot;headerlink&quot; title=&quot;1.1 起步依赖原理分析&quot;&gt;&lt;/a&gt;1.1 起步依赖原理分析&lt;/h2&gt;&lt;h3 id=&quot;1-1-1-分析spring-boot-starter-parent&quot;&gt;&lt;a href=&quot;#1-1-1-分析spring-boot-starter-parent&quot; class=&quot;headerlink&quot; title=&quot;1.1.1 分析spring-boot-starter-parent&quot;&gt;&lt;/a&gt;1.1.1 分析spring-boot-starter-parent&lt;/h3&gt;&lt;p&gt;按住Ctrl点击pom.xml中的spring-boot-starter-parent，跳转到了spring-boot-starter-parent的pom.xml，xml配置如下（只摘抄了部分重点配置）：&lt;/p&gt;
+&lt;figure class=&quot;highlight xml&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;parent&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;groupId&lt;/span&gt;&amp;gt;&lt;/span&gt;org.springframework.boot&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;groupId&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;artifactId&lt;/span&gt;&amp;gt;&lt;/span&gt;spring-boot-dependencies&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;artifactId&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;version&lt;/span&gt;&amp;gt;&lt;/span&gt;2.0.1.RELEASE&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;version&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;  &lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;relativePath&lt;/span&gt;&amp;gt;&lt;/span&gt;../../spring-boot-dependencies&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;relativePath&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;/&lt;span class=&quot;name&quot;&gt;parent&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="后端" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/"/>
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/SpringBoot/"/>
+    
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/tags/SpringBoot/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringBoot基础篇-SpringBoot快速入门</title>
+    <link href="http://yoursite.com/2020/02/19/SpringBoot%E5%9F%BA%E7%A1%80%E7%AF%87-SpringBoot%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/"/>
+    <id>http://yoursite.com/2020/02/19/SpringBoot%E5%9F%BA%E7%A1%80%E7%AF%87-SpringBoot%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/</id>
+    <published>2020-02-19T14:33:48.000Z</published>
+    <updated>2020-02-19T14:58:11.014Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h1 id=&quot;SpringBoot基础&quot;&gt;&lt;a href=&quot;#SpringBoot基础&quot; class=&quot;headerlink&quot; title=&quot;SpringBoot基础&quot;&gt;&lt;/a&gt;SpringBoot基础&lt;/h1&gt;&lt;h2 id=&quot;学习目标：&quot;&gt;&lt;a href=&quot;#学习目标：&quot; class=&quot;headerlink&quot; title=&quot;学习目标：&quot;&gt;&lt;/a&gt;学习目标：&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;能够理解Spring的优缺点&lt;/li&gt;
+&lt;li&gt;能够理解SpringBoot的特点&lt;/li&gt;
+&lt;li&gt;能够理解SpringBoot的核心功能&lt;/li&gt;
+&lt;li&gt;能够搭建SpringBoot的环境&lt;/li&gt;
+&lt;li&gt;能够完成application.properties配置文件的配置&lt;/li&gt;
+&lt;li&gt;能够完成application.yml配置文件的配置&lt;/li&gt;
+&lt;li&gt;能够使用SpringBoot集成Mybatis&lt;/li&gt;
+&lt;li&gt;能够使用SpringBoot集成Junit&lt;/li&gt;
+&lt;li&gt;能够使用SpringBoot集成SpringData JPA&lt;/li&gt;
+&lt;/ol&gt;
+    
+    </summary>
+    
+    
+      <category term="技术" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/"/>
+    
+      <category term="后端" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/"/>
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/categories/%E6%8A%80%E6%9C%AF/%E5%90%8E%E7%AB%AF/SpringBoot/"/>
+    
+    
+      <category term="SpringBoot" scheme="http://yoursite.com/tags/SpringBoot/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>About Me</title>
+    <link href="http://yoursite.com/2020/02/19/About-Me/"/>
+    <id>http://yoursite.com/2020/02/19/About-Me/</id>
+    <published>2020-02-19T12:59:47.000Z</published>
+    <updated>2020-02-19T14:58:11.012Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;blockquote&gt;
+&lt;p&gt;热衷于后端开发的程序员Tomly&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;CSDN：&lt;a href=&quot;https://blog.csdn.net/ljlj8888&quot; target=&quot;_blank&quot;
+        
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+</feed>
