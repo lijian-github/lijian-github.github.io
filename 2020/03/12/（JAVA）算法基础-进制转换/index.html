@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+   
+  <meta name="keywords" content="技术博客,后端开发,YY技术博客,SpringBoot,Java,SSM" />
+   
+  <meta name="description" content="一个后端开发的技术博客" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>
+    （JAVA）算法基础--进制转换 |  YY技术博客
+  </title>
+  <meta name="generator" content="hexo-theme-yilia-plus">
+  
+  <link rel="shortcut icon" href="/favicon.ico" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+<script src="/js/pace.min.js"></script>
+
+
+  
+
+  
+
+<link rel="alternate" href="/atom.xml" title="YY技术博客" type="application/atom+xml">
+</head>
+
+</html>
+
+<body>
+  <div id="app">
+    <main class="content">
+      <section class="outer">
+  <article id="post-（JAVA）算法基础-进制转换" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h1 class="article-title sea-center" style="border-left:0" itemprop="name">
+  （JAVA）算法基础--进制转换
+</h1>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/2020/03/12/%EF%BC%88JAVA%EF%BC%89%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80-%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2/" class="article-date">
+  <time datetime="2020-03-12T12:55:48.000Z" itemprop="datePublished">2020-03-12</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a> / <a class="article-category-link" href="/categories/%E6%8A%80%E6%9C%AF/%E7%AE%97%E6%B3%95/">算法</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">1k字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">4分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
+    
+
+    
+    
+    <div class="tocbot"></div>
+
+
+
+
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <h1 id="（JAVA）算法基础——进制转换"><a href="#（JAVA）算法基础——进制转换" class="headerlink" title="（JAVA）算法基础——进制转换"></a>（JAVA）算法基础——进制转换</h1><blockquote>
+<h3 id="题目：十六进制转八进制"><a href="#题目：十六进制转八进制" class="headerlink" title="题目：十六进制转八进制"></a><strong>题目：十六进制转八进制</strong></h3><p><strong>问题描述</strong><br>　　给定n个十六进制正整数，输出它们对应的八进制数。</p>
+<p><strong>输入格式</strong><br>　　输入的第一行为一个正整数n （1&lt;=n&lt;=10）。<br>　　接下来n行，每行一个由0-9、大写字母A-F组成的字符串，表示要转换的十六进制正整数，每个十六进制数长度不超过100000。</p>
+<p><strong>输出格式</strong><br>　　输出n行，每行为输入对应的八进制正整数。</p>
+<p><strong>【注意】</strong><br>输入的十六进制数不会有前导0，比如012A。<br>输出的八进制数也不能有前导0。</p>
+<p><strong>样例输入</strong><br>　　2<br>　　39<br>　　123ABC</p>
+<p><strong>样例输出</strong><br>　　71<br>　　4435274</p>
+</blockquote>
+<a id="more"></a>
+
+<h3 id="一、尝试解题"><a href="#一、尝试解题" class="headerlink" title="一、尝试解题"></a>一、尝试解题</h3><p>​        一拿到题目我们就想到，十六进制转二进制？？Java可没有这样的函数啊，但是，嘿嘿，Java的Integer类中有这么一个函数Integer.parseInt()可以把十六进制转成十进制，还有一个函数Integer.toOctalString()可以把十进制转换成八进制，真的是天助我也，马上开干。。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		Scanner scanner=<span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">		<span class="keyword">int</span> n=Integer.parseInt(scanner.nextLine());</span><br><span class="line">		String[] a=<span class="keyword">new</span> String[n];</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++) &#123;</span><br><span class="line">			a[i]=scanner.nextLine();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++) &#123;</span><br><span class="line">			System.out.println(Integer.toOctalString(Integer.parseInt(a[i],<span class="number">16</span>)));</span><br><span class="line">		&#125; </span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输入样例测试</p>
+<p><img src="https://img-blog.csdnimg.cn/20200311220822171.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xqbGo4ODg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>结果与样例输出相同，于是，去提交。。。。</p>
+<p>boom。。。。。，我在本地编译器没报错呀，怎么会运行错误呢。。</p>
+<p><strong>==请忽略如上代码！！！==</strong></p>
+<p><img src="https://img-blog.csdnimg.cn/20200311221207686.png" alt="在这里插入图片描述"></p>
+<h3 id="二、继续研究"><a href="#二、继续研究" class="headerlink" title="二、继续研究"></a>二、继续研究</h3><p>不知道报错的原因，于是我下载它的输入评测数据看一下。。。</p>
+<p><img src="https://img-blog.csdnimg.cn/2020031122195836.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xqbGo4ODg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>看到这样的数据，我就知道我是那么的天真。。。。</p>
+<p>如果输入的十六进制过长，它转成十进制肯定会溢出啊，Integer.parseInt()肯定报错啊，我无语了。</p>
+<p>首先，我们冷静一下。。。</p>
+<p>我们知道，</p>
+<p>==1位十六进制数对应4位二进制数==</p>
+<p>==1位八进制数对应3位二进制数==</p>
+<p>因为1111更好为15，而十六进制是满16进一，所以4位二进制数刚好对应1位二进制数，八进制也是如此。</p>
+<p><img src="https://img-blog.csdnimg.cn/20200311224532944.jpg" alt="在这里插入图片描述">)<img src="https://img-blog.csdnimg.cn/20200311224514433.jpg" alt="在这里插入图片描述"></p>
+<p>我们为何不先把十六进制转成二进制，再把二进制转成十六进制呢。。</p>
+<p><strong>解题：</strong></p>
+<p>把十六进制转成二进制，可以把每一位十六进制数转成十进制数，再把这个十进制数转成二进制（这样就不怕十六进制过长导致溢出了），每一段二进制数不够4位的都要在前面补0。</p>
+<p>把二进制转成八进制，可以把每三位的二进制数转成十进制数（二进制位数不是3的倍数要在前面补0凑够），这个十进制数就是对应位的八进制数。</p>
+<p><strong>代码如下：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.Scanner;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		Scanner scanner=<span class="keyword">new</span> Scanner(System.in);</span><br><span class="line">		<span class="keyword">int</span> n=Integer.parseInt(scanner.nextLine());</span><br><span class="line">		String[] a=<span class="keyword">new</span> String[n];</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++) &#123;</span><br><span class="line">			a[i]=scanner.nextLine();</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>;i&lt;n;i++) &#123;</span><br><span class="line">			StringBuffer bs = <span class="keyword">new</span> StringBuffer();</span><br><span class="line">			<span class="comment">//十六进制转换成二进制</span></span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;a[i].length();k++) &#123;</span><br><span class="line">				</span><br><span class="line">				String s=Integer.toBinaryString(Integer.parseInt(a[i].substring(k, k+<span class="number">1</span>), <span class="number">16</span>));</span><br><span class="line">				<span class="keyword">int</span> sl=s.length();</span><br><span class="line">				<span class="comment">//每1位十六进制数对应4位二进制数，转换后不够4位前补0</span></span><br><span class="line">				<span class="keyword">for</span> (<span class="keyword">int</span> k1=<span class="number">0</span>;k1&lt;<span class="number">4</span>-sl;k1++) &#123;</span><br><span class="line">					s=<span class="string">"0"</span>+s;</span><br><span class="line">				&#125;</span><br><span class="line">				bs.append(s);</span><br><span class="line">			&#125;</span><br><span class="line">			</span><br><span class="line">			<span class="comment">//二进制转换成八进制</span></span><br><span class="line">			<span class="comment">//每3位二进制数对应1位8进制数，所以二进制转八进制，二进制数长度一定要是3倍数，不是前补0凑够</span></span><br><span class="line">			<span class="keyword">if</span> (bs.length()%<span class="number">3</span>==<span class="number">1</span>) &#123;</span><br><span class="line">				bs.insert(<span class="number">0</span>, <span class="string">"00"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (bs.length()%<span class="number">3</span>==<span class="number">2</span>) &#123;</span><br><span class="line">				bs.insert(<span class="number">0</span>, <span class="string">"0"</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			StringBuffer os=<span class="keyword">new</span> StringBuffer();</span><br><span class="line">			<span class="keyword">for</span> (<span class="keyword">int</span> k=<span class="number">0</span>;k&lt;bs.length();k+=<span class="number">3</span>) &#123;</span><br><span class="line">				String s=Integer.parseInt(bs.substring(k, k+<span class="number">3</span>),<span class="number">2</span>)+<span class="string">""</span>;<span class="comment">//3位二进制转换成十进制就是对应的八进制数，毕竟8&lt;10嘛，不必再转一次</span></span><br><span class="line">				os.append(s);</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="comment">//前面有0去0，依题目前面最多只能有一个0</span></span><br><span class="line">			<span class="keyword">if</span> (os.charAt(<span class="number">0</span>)==<span class="string">'0'</span>) &#123;</span><br><span class="line">				os.deleteCharAt(<span class="number">0</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			System.out.println(os);</span><br><span class="line">		&#125;</span><br><span class="line">		</span><br><span class="line"></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输入样例测试</p>
+<p><img src="https://img-blog.csdnimg.cn/20200311220822171.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2xqbGo4ODg4,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p>成功，去提交。。。。</p>
+<p><img src="https://img-blog.csdnimg.cn/20200311225935195.png" alt="在这里插入图片描述"></p>
+
+      
+      <!-- reward -->
+      
+      <div id="reward-btn">
+        打赏
+      </div>
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+        <div class="declare">
+          <ul class="post-copyright">
+            <li>
+              <i class="ri-copyright-line"></i>
+              <strong>版权声明： </strong s>
+              本博客所有文章除特别声明外，均采用 <a href="https://www.apache.org/licenses/LICENSE-2.0.html" rel="external nofollow"
+                target="_blank">Apache License 2.0</a> 许可协议。转载请注明出处！
+            </li>
+          </ul>
+        </div>
+        
+    <footer class="article-footer">
+      
+          
+<div class="share-btn">
+      <span class="share-sns share-outer">
+        <i class="ri-share-forward-line"></i>
+        分享
+      </span>
+      <div class="share-wrap">
+        <i class="arrow"></i>
+        <div class="share-icons">
+          
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="ri-weibo-fill"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="ri-wechat-fill"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="ri-qq-fill"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="ri-douban-line"></i>
+          </a>
+          <!-- <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a> -->
+          
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="ri-facebook-circle-fill"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="ri-twitter-fill"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="ri-google-fill"></i>
+          </a>
+        </div>
+      </div>
+</div>
+
+<div class="wx-share-modal">
+    <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://yoursite.com/2020/03/12/%EF%BC%88JAVA%EF%BC%89%E7%AE%97%E6%B3%95%E5%9F%BA%E7%A1%80-%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div id="share-mask"></div>
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%AE%97%E6%B3%95/" rel="tag">算法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" rel="tag">类型转换</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+  
+  <nav class="article-nav">
+    
+      <a href="/2020/03/12/SpringBoot%E7%BB%93%E5%90%88JWT-Shiro-Redis%E5%AE%9E%E7%8E%B0token%E6%97%A0%E7%8A%B6%E6%80%81%E7%99%BB%E5%BD%95%E6%8E%88%E6%9D%83/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            SpringBoot结合JWT+Shiro+Redis实现token无状态登录授权
+          
+        </div>
+      </a>
+    
+    
+      <a href="/2020/02/19/SpringBoot%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%8B%E8%BD%BD%EF%BC%8C%E6%95%B4%E5%90%88OpenOffice-pdf-js%E5%AE%9E%E7%8E%B0office%E6%96%87%E4%BB%B6%E9%A2%84%E8%A7%88/" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">SpringBoot文件上传下载，整合OpenOffice-pdf-js实现office文件预览</div>
+      </a>
+    
+  </nav>
+
+
+  
+
+  
+  
+<!-- valine评论 -->
+<div id="vcomments-box">
+    <div id="vcomments">
+    </div>
+</div>
+<script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src='https://cdn.jsdelivr.net/npm/valine@1.3.10/dist/Valine.min.js'></script>
+<script>
+    new Valine({
+        el: '#vcomments',
+        app_id: 'nQU5pPw38nBiR8EeVFl8veLT-gzGzoHsz',
+        app_key: 'tzQF8va3SgeFfWzI7AHPPFw9',
+        path: window.location.pathname,
+        notify: 'false',
+        verify: 'false',
+        avatar: 'mp',
+        placeholder: '给我的文章加点评论吧~',
+        recordIP: true
+    });
+    const infoEle = document.querySelector('#vcomments .info');
+    if (infoEle && infoEle.childNodes && infoEle.childNodes.length > 0) {
+        infoEle.childNodes.forEach(function (item) {
+            item.parentNode.removeChild(item);
+        });
+    }
+</script>
+<style>
+    #vcomments-box {
+        padding: 5px 30px;
+    }
+
+    @media screen and (max-width: 800px) {
+        #vcomments-box {
+            padding: 5px 0px;
+        }
+    }
+
+    #vcomments-box #vcomments {
+        background-color: #fff;
+    }
+
+    .v .vlist .vcard .vh {
+        padding-right: 20px;
+    }
+
+    .v .vlist .vcard {
+        padding-left: 10px;
+    }
+</style>
+
+  
+
+  
+  
+  
+
+</article>
+</section>
+      <footer class="footer">
+  <div class="outer">
+    <ul class="list-inline">
+      <li>
+        &copy;
+        2020
+        TomLy
+      </li>
+      <li>
+        
+      </li>
+    </ul>
+    <ul class="list-inline">
+      <li>
+        
+        
+        <span>
+  <i>PV:<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+</span>
+        
+      </li>
+      <li>
+        <!-- cnzz统计 -->
+        
+        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
+        
+      </li>
+    </ul>
+  </div>
+</footer>
+    <div class="to_top">
+        <div class="totop" id="totop">
+  <i class="ri-arrow-up-line"></i>
+</div>
+      </div>
+    </main>
+      <aside class="sidebar">
+        <button class="navbar-toggle"></button>
+<nav class="navbar">
+  
+  <div class="logo">
+    <a href="/"><img src="/images/ayer-side.png" alt="YY技术博客"></a>
+  </div>
+  
+  <ul class="nav nav-main">
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/">主页</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/archives">归档</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories">分类</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/tags">标签</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-item-link" href="/About-Me/index.html">关于我</a>
+    </li>
+    
+  </ul>
+</nav>
+<nav class="navbar navbar-bottom">
+  <ul class="nav">
+    <li class="nav-item">
+      
+      <a class="nav-item-link nav-item-search"  title="Search">
+        <i class="ri-search-line"></i>
+      </a>
+      
+      
+      <a class="nav-item-link" target="_blank" href="/atom.xml" title="RSS Feed">
+        <i class="ri-rss-line"></i>
+      </a>
+      
+	  <a class="nav-item-link" href="https://github.com/lijian-github" target="_blank" rel="noopener">
+		<img src="/images/github.png" style="width:20px;height:20px;" >
+      </a>
+    </li>
+  </ul>
+</nav>
+<div class="search-form-wrap">
+  <div class="local-search local-search-plugin">
+  <input type="search" id="local-search-input" class="local-search-input" placeholder="Search...">
+  <div id="local-search-result" class="local-search-result"></div>
+</div>
+</div>
+      </aside>
+      <div id="mask"></div>
+
+<!-- #reward -->
+<div id="reward">
+  <span class="close"><i class="ri-close-line"></i></span>
+  <p class="reward-p"><i class="ri-cup-line"></i>请打赏一下吧~</p>
+  <div class="reward-box">
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/alipay.jpg">
+      <span class="reward-type">支付宝</span>
+    </div>
+    
+    
+    <div class="reward-item">
+      <img class="reward-img" src="/images/wechat.jpg">
+      <span class="reward-type">微信</span>
+    </div>
+    
+  </div>
+</div>
+      
+<script src="/js/jquery-2.0.3.min.js"></script>
+
+
+<script src="/js/jquery.justifiedGallery.min.js"></script>
+
+
+<script src="/js/lazyload.min.js"></script>
+
+
+<script src="/js/busuanzi-2.3.pure.min.js"></script>
+
+
+<script src="/js/share.js"></script>
+
+
+
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script>
+  try {
+    var typed = new Typed("#subtitle", {
+    strings: ['愿所有的后会有期，都是他日的别来无恙','生命中的不期而遇，都是你努力中的惊喜','技术好，不掉发，没有Bug'],
+    startDelay: 0,
+    typeSpeed: 200,
+    loop: true,
+    backSpeed: 50,
+    showCursor: true
+    });
+  } catch (err) {
+  }
+  
+</script>
+
+
+
+
+<script src="/js/tocbot.min.js"></script>
+
+<script>
+  // Tocbot_v4.7.0  http://tscanlin.github.io/tocbot/
+  tocbot.init({
+    tocSelector: '.tocbot',
+    contentSelector: '.article-entry',
+    headingSelector: 'h1, h2, h3, h4, h5, h6',
+    hasInnerContainers: true,
+    scrollSmooth: true,
+    scrollContainer:'main',
+    positionFixedSelector: '.tocbot',
+    positionFixedClass: 'is-position-fixed',
+    fixedSidebarOffset: 'auto',
+    onClick: (e) => {
+      $('.toc-link').removeClass('is-active-link');
+      $(`a[href=${e.target.hash}]`).addClass('is-active-link');
+      $(e.target.hash).scrollIntoView();
+      return false;
+    }
+  });
+</script>
+
+
+<script>
+  var ayerConfig = {
+    mathjax: false
+  }
+</script>
+
+
+<script src="/js/ayer.js"></script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jquery-modal@0.9.2/jquery.modal.min.css">
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+
+            <div class="pswp__top-bar">
+
+                <!--  Controls are self-explanatory. Order can be changed. -->
+
+                <div class="pswp__counter"></div>
+
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+                <button class="pswp__button pswp__button--share" style="display:none" title="Share"></button>
+
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                        <div class="pswp__preloader__cut">
+                            <div class="pswp__preloader__donut"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div>
+            </div>
+
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.css">
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js"></script>
+
+<script>
+    function viewer_init() {
+        let pswpElement = document.querySelectorAll('.pswp')[0];
+        let $imgArr = document.querySelectorAll(('.article-entry img:not(.reward-img)'))
+
+        $imgArr.forEach(($em, i) => {
+            $em.onclick = () => {
+                // slider展开状态
+                // todo: 这样不好，后面改成状态
+                if (document.querySelector('.left-col.show')) return
+                let items = []
+                $imgArr.forEach(($em2, i2) => {
+                    let img = $em2.getAttribute('data-idx', i2)
+                    let src = $em2.getAttribute('data-target') || $em2.getAttribute('src')
+                    let title = $em2.getAttribute('alt')
+                    // 获得原图尺寸
+                    const image = new Image()
+                    image.src = src
+                    items.push({
+                        src: src,
+                        w: image.width || $em2.width,
+                        h: image.height || $em2.height,
+                        title: title
+                    })
+                })
+                var gallery = new PhotoSwipe(pswpElement, PhotoSwipeUI_Default, items, {
+                    index: parseInt(i)
+                });
+                gallery.init()
+            }
+        })
+    }
+    viewer_init()
+</script>
+
+
+
+
+<script type="text/javascript" src="https://js.users.51.la/20544303.js"></script>
+  </div>
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/haruto.model.json"},"display":{"position":"left","width":150,"height":300,"hOffset":50,"vOffset":-40},"mobile":{"show":true,"scale":0.5},"react":{"opacity":0.8},"dialog":"enable:true hitokoto:true"});</script></body>
+
+</html>
